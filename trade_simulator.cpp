@@ -6,9 +6,24 @@ using namespace std;
 void fill_stock_prices(vector<double> &price)
 {   
     double stock_price;
-    cout << "Enter stock price - ";
-    cin >> stock_price;
 
+    bool flag = false;
+
+    do 
+    {
+        cout << "Enter stock price - ";
+
+        if (cin.fail())
+        {
+            cout << "You have entered an invalid input, please try again." << endl;
+            flag = true;
+        }
+
+    }
+    while (flag);
+
+
+    cin >> stock_price;
     price.push_back(stock_price);
 
 }
@@ -41,7 +56,6 @@ int main()
 
             if (input == 'Y' )
             {
-
                 fill_stock_prices(stock_price_vector);
             }
 
