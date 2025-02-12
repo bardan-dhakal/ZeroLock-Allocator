@@ -3,21 +3,23 @@ using namespace std;
 #include <vector>
 #include <cctype>
 
-void fill_stock_prices(double array[], int array_len)
-{
-    for (int i = 0; i < array_len; i++)
-    {
-        cout << "Price of Stock " << i+1 << " - " ;
-        cin >> array[i];
-    }
+void fill_stock_prices(vector<double> &price)
+{   
+    double stock_price;
+    cout << "Enter stock price - ";
+    cin >> stock_price;
+
+    price.push_back(stock_price);
+
 }
 
 
-void print_stock_prices(double stock_prices[], int num)
-{
-    for (int i = 0; i < num ; i++)
+void print_stock_prices(vector<double> price, int size)
+{   
+    cout << " Here are the stock prices you have provided" << endl;
+    for (int i = 0; i < size ; i++)
     {
-        cout << " Price of Stock " << i + 1 << " is - " << stock_prices[i]  << endl;
+        cout << " Price of Stock " << i + 1 << " is - " << price[i]  << endl;
     }
 }
 
@@ -39,11 +41,10 @@ int main()
 
             if (input == 'Y' )
             {
-                cout << "Enter stock price - " ;
-                cin >> stock_price;
-                
-                stock_price_vector.push_back(stock_price);
+
+                fill_stock_prices(stock_price_vector);
             }
+
 
             else if (input == 'N')
             {
@@ -54,10 +55,13 @@ int main()
             {
                 cout << "Invalid keyword entered, try again." << endl;
             }
-
             
         }
+    
+    int size = stock_price_vector.size();
 
-    //fill_stock_prices(stock_prices, num);
-    //print_stock_prices(stock_prices, num);
+    print_stock_prices(stock_price_vector, size);
+
+    
+
 }
