@@ -2,6 +2,7 @@
 using namespace std;
 #include <vector>
 #include <cctype>
+#include <limits>
 
 void fill_stock_prices(vector<double> &price)
 {   
@@ -16,6 +17,8 @@ void fill_stock_prices(vector<double> &price)
         if (cin.fail())
         {
             cout << "You have entered an invalid input, please try again." << endl;
+            cin.clear();
+            cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
             flag = true;
         }
 
