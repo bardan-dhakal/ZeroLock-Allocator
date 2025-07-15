@@ -1,0 +1,215 @@
+# High-Performance Lock-Free Memory Allocator Project
+
+We need to completely change this repo and start from scratch to build this new project. This is a comprehensive C++ project that will demonstrate advanced systems programming skills suitable for Big Tech, Finance/Quant, and Embedded roles.
+
+## Project Overview
+
+Build a high-performance, lock-free memory allocator system that provides 5-10x performance improvements over standard malloc/new. The allocator should support multiple allocation strategies and be production-ready with comprehensive benchmarking.
+
+## Core Requirements
+
+### 1. Multiple Allocation Strategies
+- **Pool Allocator**: Fixed-size block allocation for predictable performance
+- **Lock-Free Allocator**: Thread-safe allocation using atomic operations and compare-and-swap
+- **Stack Allocator**: LIFO allocation for temporary objects
+- **Buddy System**: Power-of-2 sized blocks with coalescing
+- **Slab Allocator**: Kernel-style allocation for frequently used objects
+
+### 2. Lock-Free Implementation
+- Use `std::atomic` and compare-and-swap operations
+- Implement ABA problem prevention
+- Support multiple producer/consumer scenarios
+- No mutex or lock usage in hot paths
+- Thread-local storage optimization
+
+### 3. Performance Features
+- Memory alignment for cache optimization
+- NUMA-aware allocation strategies
+- Prefetching hints for CPU cache
+- Minimal system calls (mmap/munmap only during initialization)
+- Bounded allocation time (O(1) for most operations)
+
+### 4. Memory Management
+- Automatic defragmentation
+- Memory leak detection and reporting
+- Heap corruption detection
+- Memory usage statistics and profiling
+- Support for custom memory alignment requirements
+
+## Technical Specifications
+
+### Core Classes Structure
+```cpp
+// Main allocator interface
+class HighPerformanceAllocator {
+public:
+    template<typename T>
+    T* allocate(size_t count = 1);
+    
+    template<typename T>
+    void deallocate(T* ptr, size_t count = 1);
+    
+    void* allocate_bytes(size_t bytes, size_t alignment = alignof(std::max_align_t));
+    void deallocate_bytes(void* ptr, size_t bytes, size_t alignment = alignof(std::max_align_t));
+};
+
+// Strategy-specific allocators
+class PoolAllocator;
+class LockFreeAllocator;
+class StackAllocator;
+class BuddyAllocator;
+class SlabAllocator;
+```
+
+### 5. Modern C++ Features to Use
+- C++17/20 features: constexpr, if constexpr, concepts (if C++20)
+- Template metaprogramming for type-safe allocation
+- RAII for resource management
+- Move semantics for efficient object handling
+- std::atomic for lock-free operations
+- Memory ordering specifications (acquire, release, relaxed)
+
+### 6. Platform Support
+- Linux (primary target)
+- Windows (secondary)
+- Support for both 32-bit and 64-bit architectures
+- Embedded-friendly subset (no exceptions, minimal standard library)
+
+## Benchmarking Requirements
+
+### Performance Tests
+- Single-threaded allocation/deallocation speed
+- Multi-threaded contention scenarios (2, 4, 8, 16 threads)
+- Memory fragmentation analysis
+- Cache miss rate measurements
+- Allocation time distribution (min, max, average, percentiles)
+
+### Comparison Baselines
+- Standard malloc/free
+- jemalloc
+- tcmalloc
+- nedmalloc
+
+### Metrics to Track
+- Allocations per second
+- Memory overhead percentage
+- Time to allocate (nanoseconds)
+- Memory fragmentation ratio
+- Thread contention impact
+
+## Project Structure
+
+```
+high_performance_allocator/
+├── include/
+│   ├── allocator/
+│   │   ├── high_performance_allocator.hpp
+│   │   ├── pool_allocator.hpp
+│   │   ├── lock_free_allocator.hpp
+│   │   ├── stack_allocator.hpp
+│   │   ├── buddy_allocator.hpp
+│   │   └── slab_allocator.hpp
+│   └── utils/
+│       ├── atomic_utils.hpp
+│       ├── memory_utils.hpp
+│       └── benchmark_utils.hpp
+├── src/
+│   ├── allocator/
+│   │   ├── high_performance_allocator.cpp
+│   │   ├── pool_allocator.cpp
+│   │   ├── lock_free_allocator.cpp
+│   │   ├── stack_allocator.cpp
+│   │   ├── buddy_allocator.cpp
+│   │   └── slab_allocator.cpp
+│   └── utils/
+│       ├── atomic_utils.cpp
+│       ├── memory_utils.cpp
+│       └── benchmark_utils.cpp
+├── benchmarks/
+│   ├── single_thread_bench.cpp
+│   ├── multi_thread_bench.cpp
+│   ├── fragmentation_bench.cpp
+│   └── comparison_bench.cpp
+├── tests/
+│   ├── unit_tests/
+│   ├── integration_tests/
+│   └── stress_tests/
+├── examples/
+│   ├── basic_usage.cpp
+│   ├── gaming_example.cpp
+│   ├── finance_example.cpp
+│   └── embedded_example.cpp
+├── docs/
+│   ├── design_document.md
+│   ├── performance_analysis.md
+│   └── api_reference.md
+├── CMakeLists.txt
+└── README.md
+```
+
+## Key Implementation Details
+
+### 1. Lock-Free Free List
+```cpp
+struct Node {
+    std::atomic<Node*> next;
+    alignas(64) char data[];  // Cache line aligned
+};
+
+class LockFreeAllocator {
+    std::atomic<Node*> free_list_;
+    
+    void* allocate() {
+        Node* head = free_list_.load(std::memory_order_acquire);
+        while (head != nullptr) {
+            Node* next = head->next.load(std::memory_order_relaxed);
+            if (free_list_.compare_exchange_weak(head, next, 
+                std::memory_order_release, std::memory_order_acquire)) {
+                return head;
+            }
+        }
+        return allocate_new_chunk();
+    }
+};
+```
+
+### 2. Memory Pool Management
+- Pre-allocate large chunks using mmap
+- Divide chunks into fixed-size blocks
+- Maintain free block lists per size class
+- Implement block coalescing for defragmentation
+
+### 3. Thread-Local Optimization
+- Thread-local caches to reduce contention
+- Periodic cache balancing between threads
+- Overflow handling to global allocator
+
+## Quality Requirements
+
+### Error Handling
+- No exceptions in allocation path (use error codes)
+- Graceful degradation when memory is exhausted
+- Detailed error reporting for debugging
+
+### Testing
+- Unit tests for all allocation strategies
+- Thread safety tests with ThreadSanitizer
+- Memory leak detection with Valgrind
+- Stress tests with random allocation patterns
+- Performance regression tests
+
+### Documentation
+- Comprehensive API documentation
+- Performance analysis report
+- Design decision explanations
+- Usage examples for different domains
+
+## Build System
+
+Use CMake with the following features:
+- Support for different build types (Debug, Release, RelWithDebInfo)
+- Optional benchmark building
+- Optional test building
+- Compiler-specific optimizations
+- Static analysis integration (clang-tidy, cppcheck)
+
