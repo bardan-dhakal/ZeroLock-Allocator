@@ -3,6 +3,7 @@
 #include <cassert>
 #include <new>
 
+// Constructor: Allocates a memory pool and initializes the free list
 PoolAllocator::PoolAllocator(size_t block_size, size_t block_count)
     : block_size_(block_size), block_count_(block_count), memory_(nullptr), free_list_(nullptr) {
     // Ensure block size is at least pointer size
@@ -19,10 +20,12 @@ PoolAllocator::PoolAllocator(size_t block_size, size_t block_count)
     free_list_ = memory_;
 }
 
+// Destructor: Releases the memory pool
 PoolAllocator::~PoolAllocator() {
     std::free(memory_);
 }
 
+// Allocates a block from the pool (returns nullptr if out of memory)
 void* PoolAllocator::allocate() {
     if (!free_list_) return nullptr; // Out of memory
     void* block = free_list_;
@@ -30,6 +33,7 @@ void* PoolAllocator::allocate() {
     return block;
 }
 
+// Deallocates a block, returning it to the free list
 void PoolAllocator::deallocate(void* ptr) {
     if (!ptr) return;
     *reinterpret_cast<void**>(ptr) = free_list_;
