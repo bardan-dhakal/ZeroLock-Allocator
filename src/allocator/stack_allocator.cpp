@@ -1,4 +1,5 @@
 #include "allocator/stack_allocator.hpp"
+#include <cstddef>
 
 StackAllocator::StackAllocator() {}
 

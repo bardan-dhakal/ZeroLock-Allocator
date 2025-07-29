@@ -1,0 +1,13 @@
+/home/bardan/Lock-Free-Memory-Allocator/build/CMakeFiles/high_performance_allocator.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/CMakeFiles/basic_usage.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/CMakeFiles/edit_cache.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/CMakeFiles/rebuild_cache.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/tests/unit_tests/CMakeFiles/unit_tests.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/tests/unit_tests/CMakeFiles/edit_cache.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/tests/unit_tests/CMakeFiles/rebuild_cache.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/tests/integration_tests/CMakeFiles/integration_tests.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/tests/integration_tests/CMakeFiles/edit_cache.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/tests/integration_tests/CMakeFiles/rebuild_cache.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/tests/stress_tests/CMakeFiles/stress_tests.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/tests/stress_tests/CMakeFiles/edit_cache.dir
+/home/bardan/Lock-Free-Memory-Allocator/build/tests/stress_tests/CMakeFiles/rebuild_cache.dir

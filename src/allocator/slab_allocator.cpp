@@ -1,4 +1,5 @@
 #include "allocator/slab_allocator.hpp"
+#include <cstddef>
 
 SlabAllocator::SlabAllocator() {}
 

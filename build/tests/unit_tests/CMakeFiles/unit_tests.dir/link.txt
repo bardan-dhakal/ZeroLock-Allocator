@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/unit_tests.dir/allocator_basic_test.cpp.o -o unit_tests  -lpthread ../../libhigh_performance_allocator.a 

@@ -1,4 +1,5 @@
 #include "allocator/buddy_allocator.hpp"
+#include <cstddef>
 
 BuddyAllocator::BuddyAllocator() {}
 
