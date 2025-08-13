@@ -1,0 +1,33 @@
+#include "allocator/pool_allocator.hpp"
+#include <cstdlib>
+#include <iostream>
+#include <cassert>
+
+PoolAllocator::PoolAllocator(size_t block_size, size_t block_count) {
+    block_size_ = block_size;
+    block_count_ = block_count;
+
+    memory_ = malloc(block_size * block_count);
+    assert(memory_ != NULL && "malloc failed");
+
+    
+    void* moving_ptr = free_list_;
+
+    for (size_t i = 0; i < block_count; i++)
+    {
+        if (i == block_count - 1)
+        {
+            *reinterpret_cast<void**>(moving_ptr) = nullptr;
+            break;
+        }
+        
+        *reinterpret_cast<void**>(moving_ptr) = moving_ptr + block_size;
+        moving_ptr = static_cast<char*>(moving_ptr) + block_size;
+    }
+
+    free_list_ = memory_;
+}
+
+PoolAllocator::~PoolAllocator(){
+    free(memory_);
+}
