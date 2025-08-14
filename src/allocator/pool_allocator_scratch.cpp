@@ -42,3 +42,11 @@ void* PoolAllocator::allocate(){
     return block;
     
 }
+
+void PoolAllocator::deallocate(void* ptr) {
+    if (ptr == nullptr) {
+        return;
+    }
+    *reinterpret_cast<void**>(ptr) = free_list_;
+    free_list_ = ptr;
+}
