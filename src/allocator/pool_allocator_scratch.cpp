@@ -8,10 +8,10 @@ PoolAllocator::PoolAllocator(size_t block_size, size_t block_count) {
     block_count_ = block_count;
 
     memory_ = malloc(block_size * block_count);
-    assert(memory_ != NULL && "malloc failed");
+    assert(memory_ != nullptr && "malloc failed");
 
     
-    void* moving_ptr = free_list_;
+    void* moving_ptr = memory_;
 
     for (size_t i = 0; i < block_count; i++)
     {
@@ -30,4 +30,15 @@ PoolAllocator::PoolAllocator(size_t block_size, size_t block_count) {
 
 PoolAllocator::~PoolAllocator(){
     free(memory_);
+}
+
+void* PoolAllocator::allocate(){
+    if (free_list_ == nullptr) {
+        return nullptr;
+    }
+    void* block = free_list_;
+    free_list_ = *reinterpret_cast<void**>(free_list_);
+
+    return block;
+    
 }
