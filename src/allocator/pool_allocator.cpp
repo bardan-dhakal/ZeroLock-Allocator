@@ -49,7 +49,7 @@ void* PoolAllocator::allocate(){
     return block;
 }
 
-void PoolAllocator::deallocate(void* ptr) {
+void* PoolAllocator::deallocate(void* ptr) {
     if (ptr == nullptr) {
         return; // Ignore null pointers
     }
