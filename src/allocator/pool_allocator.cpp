@@ -25,7 +25,7 @@ PoolAllocator::PoolAllocator(size_t block_size, size_t block_count) {
         }
         
         // Each block points to the next block
-        *reinterpret_cast<void**>(moving_ptr) = moving_ptr + block_size;
+        *reinterpret_cast<void**>(moving_ptr) = *reinterpret_cast<char**>(moving_ptr) + block_size;
         moving_ptr = static_cast<char*>(moving_ptr) + block_size;
     }
 
