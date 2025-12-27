@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sys/mman.h>
+#include <string>
 #include <cstring>
 
 void* allocate_memory(size_t size)
@@ -29,44 +30,52 @@ void* allocate_memory(size_t size)
 
 int main()
 {
-    void* ptr;
-
-    size_t required_bytes = 4096; //how many bytes you want
-
-    try
+    try 
     {
-        ptr = allocate_memory(required_bytes);
-        std::cout << "Memory allocated at " << ptr << std::endl;
+        void* ptr;
+
+        size_t required_bytes = 4096; //how many bytes you want
+
+        try
+        {
+            ptr = allocate_memory(required_bytes);
+            std::cout << "Memory allocated at " << ptr << std::endl;
+        }
+
+        catch (const std::runtime_error& e)
+        {
+            std::cerr << "Error" << e.what() << std::endl;
+            return 1;
+        }
+
+        char* write_ptr = static_cast<char*>(ptr);
+        std:: string write_data = "I wrote data on to the allocated memory. I wrote data on to the allocated memory. I wrote data on to the allocated memory. I wrote data on to the allocated memory.";
+        size_t totalBytes = write_data.length() + 1; // +1 for the null character
+
+        if (totalBytes > required_bytes)
+        {
+            munmap(ptr, required_bytes);
+            throw std::length_error("Write data exceeds allocated size");
+        }
+
+
+        memcpy(write_ptr, write_data.c_str(), totalBytes);
+
+        //Memory Independence test
+        write_data = "COMPLETELY DIFFERENT TEXT"; //This will not be printed
+
+
+        std::string read_data(write_ptr);
+        std::cout << "Read data is - " << read_data << std::endl;
+
+        munmap(ptr, required_bytes);
     }
 
-    catch (const std::runtime_error& e)
+    catch (const std::exception& e)
     {
-        std::cerr << "Error" << e.what() << std::endl;
+        std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
-
-    char* write_ptr = static_cast<char*>(ptr);
-    std:: string write_data = "I wrote data on to the allocated memory. I wrote data on to the allocated memory. I wrote data on to the allocated memory. I wrote data on to the allocated memory.";
-    size_t totalBytes = write_data.length() + 1; // +1 for the null character
-
-    if (totalBytes > required_bytes)
-    {
-        munmap(ptr, required_bytes);
-        throw std::length_error("Write data exceeds allocated size");
-    }
-
-
-    memcpy(write_ptr, write_data.c_str(), totalBytes);
-
-    //Memory Independence test
-    write_data = "COMPLETELY DIFFERENT TEXT"; //This will not be printed
-
-
-    std::string read_data(write_ptr);
-    std::cout << "Read data is - " << read_data << std::endl;
-
-    munmap(ptr, required_bytes);
-
 
 
     return 0;
