@@ -6,13 +6,13 @@ void* allocate_memory(size_t size)
 {
     void* mem_addr;
     
-    int permissions = PROT_READ | PROT_WRITE; //memory protection - allows for read and write
+    constexpr int permissions = PROT_READ | PROT_WRITE; //memory protection - allows for read and write
 
-    int flag = MAP_ANONYMOUS | MAP_PRIVATE; //mapping is not backed by any file, memory is raw
+    constexpr int flag = MAP_ANONYMOUS | MAP_PRIVATE; //mapping is not backed by any file, memory is raw
 
-    int file_descriptor = -1; //no file required
+    constexpr int file_descriptor = -1; //no file required
 
-    off_t offset = 0; //no required offset
+    constexpr off_t offset = 0; //no required offset
 
     mem_addr = mmap(NULL, size, permissions, flag, file_descriptor, offset);
 
@@ -47,16 +47,19 @@ int main()
 
     char* write_ptr = static_cast<char*>(ptr);
     std:: string write_data = "I wrote data on to the allocated memory. I wrote data on to the allocated memory. I wrote data on to the allocated memory. I wrote data on to the allocated memory.";
-    size_t totalBytes = write_data.length();
+    size_t totalBytes = write_data.length() + 1; // +1 for the null character
 
     if (totalBytes > required_bytes)
     {
-        std::cout << "Write data too large" << std::endl;
-        return 1;
+        munmap(ptr, required_bytes);
+        throw std::length_error("Write data exceeds allocated size");
     }
 
-    
+
     memcpy(write_ptr, write_data.c_str(), totalBytes);
+
+    //Memory Independence test
+    write_data = "COMPLETELY DIFFERENT TEXT"; //This will not be printed
 
 
     std::string read_data(write_ptr);
