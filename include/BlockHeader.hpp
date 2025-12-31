@@ -2,18 +2,10 @@
 
 #include <cstddef>
 
-struct BlockHeader
+struct alignas(8) BlockHeader
 {
-    size_t size;
-    bool is_free;
+    size_t size; //size of payload, 64 bytes only for now
+    bool is_free; 
     BlockHeader* next;
-
-    BlockHeader()
-    {
-        //i don't know what to do with the size_t block_size variable, would this not be chosen accordingly 
-        //to the size class the users request size falls into?
-        is_free = true;
-        next = nullptr;
-    }
 
 };
