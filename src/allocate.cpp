@@ -27,3 +27,19 @@ void* allocate(size_t size)
 
 
 }
+
+void free(void* ptr)
+{
+    if (ptr == nullptr)
+    {
+        return;
+    }
+      
+    BlockHeader* free_blk_header = reinterpret_cast<BlockHeader*>(ptr) - 1;
+    free_blk_header->is_free = true;
+
+    free_blk_header->next = free_list_head;
+    free_list_head = free_blk_header;
+
+
+}
