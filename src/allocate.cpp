@@ -12,22 +12,29 @@ namespace LockFreeAllocator
             return nullptr;
         }
 
-        if (free_list_head == nullptr)
+        BlockHeader* expected_head;
+        BlockHeader* new_head;
+
+        do
         {
-            std::cout << "Free List Head is Null\n";
-            return nullptr;
-        }
+            expected_head = free_list_head.load();
+                
+            if (expected_head == nullptr)
+            {
+                std::cout << "Free List Head is Null\n";
+                return nullptr;
+            }
 
-        else
-        {
-            BlockHeader* temp_block = free_list_head;
+            new_head = expected_head->next;
 
-            free_list_head = free_list_head->next;
+        } while (!free_list_head.compare_exchange_weak(expected_head, new_head));
 
-            temp_block->is_free = false;
 
-            return reinterpret_cast<void*>(temp_block + 1);  
-        }
+        expected_head->is_free = false;
+
+        return reinterpret_cast<void*>(expected_head + 1);  
+
+        
 
 
     }
