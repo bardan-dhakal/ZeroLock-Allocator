@@ -1,4 +1,10 @@
 #pragma once
 #include "allocator.hpp"
+#include <cstddef>
 
-void* allocate(size_t size);
+namespace LockFreeAllocator
+{
+    void* allocate(size_t size);
+    void free(void* ptr);
+}
+
