@@ -1,8 +1,9 @@
 #include <iostream>
 #include <sys/mman.h>
 #include "../include/allocator.hpp"
+#include <atomic>
 
-BlockHeader* free_list_head = nullptr;
+std::atomic<BlockHeader*> free_list_head {nullptr};
 
 
 void* allocate_raw_memory()
