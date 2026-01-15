@@ -17,7 +17,7 @@ int main()
     
     // Test 1: Single allocation
     std::cout << "=== Test 1: Single Allocation ===\n";
-    void* ptr1 = allocate(64);
+    void* ptr1 = LockFreeAllocator::allocate(64);
     
     if (ptr1 == nullptr)
     {
@@ -37,9 +37,9 @@ int main()
     
     // Test 2: Multiple allocations
     std::cout << "=== Test 2: Multiple Allocations ===\n";
-    void* ptr2 = allocate(32);
-    void* ptr3 = allocate(16);
-    void* ptr4 = allocate(64);
+    void* ptr2 = LockFreeAllocator::allocate(32);
+    void* ptr3 = LockFreeAllocator::allocate(16);
+    void* ptr4 = LockFreeAllocator::allocate(64);
     
     std::cout << "Ptr 1: " << ptr1 << "\n";
     std::cout << "Ptr 2: " << ptr2 << "\n";
@@ -48,7 +48,7 @@ int main()
     
     // Test 3: Size validation
     std::cout << "=== Test 3: Size Validation ===\n";
-    void* big = allocate(100);  
+    void* big = LockFreeAllocator::allocate(100);  
     
     if (big == nullptr)
     {
@@ -61,7 +61,7 @@ int main()
     
     // Test 4: Mixed data types with proper offsets
     std::cout << "=== Test 4: Mixed Data Types ===\n";
-    void* test_block = allocate(64);
+    void* test_block = LockFreeAllocator::allocate(64);
     
     if (test_block == nullptr)
     {
@@ -102,7 +102,7 @@ int main()
     
     while (true)
     {
-        void* p = allocate(64);
+        void* p = LockFreeAllocator::allocate(64);
         if (p == nullptr)
         {
             break;
