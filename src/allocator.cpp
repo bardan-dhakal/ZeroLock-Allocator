@@ -71,7 +71,7 @@ void initialize_allocator()
 
     }
 
-    free_list_head = reinterpret_cast<BlockHeader*>(raw_mem);
+    free_list_head.store(reinterpret_cast<BlockHeader*>(raw_mem));
     
 
 }
