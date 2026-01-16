@@ -1,28 +1,29 @@
 #include <iostream>
 #include "../include/allocator.hpp"
 
-
 int main()
 {
-    initialize_allocator();
+    LockFreeAllocator::initialize_allocator();
 
-    if (free_list_head)
+    BlockHeader* current = LockFreeAllocator::free_list_head.load();  // Load the atomic
+    
+    if (current)
     {
         std::cout << "Free List Head Initialized\n" << std::endl;
     }
 
     size_t block_count = 0;
-    while (free_list_head)
+    while (current)  // Use the loaded copy
     {
         block_count++;
         
-        std::cout << "Block " << block_count << " address - " << static_cast<void*>(free_list_head) << std::endl;
-        std::cout << "Block Size - " << free_list_head->size << std::endl;
-        std::cout << "Block Header Size - " << sizeof(*free_list_head) << std::endl;
-        std::cout << "Next Block - " << static_cast<void*>(free_list_head->next) << std::endl;
-        std::cout << "\n\n" ;
+        std::cout << "Block " << block_count << " address - " << static_cast<void*>(current) << std::endl;
+        std::cout << "Block Size - " << current->size << std::endl;
+        std::cout << "Block Header Size - " << sizeof(*current) << std::endl;
+        std::cout << "Next Block - " << static_cast<void*>(current->next) << std::endl;
+        std::cout << "\n\n";
 
-        free_list_head = free_list_head->next;
+        current = current->next;  // Move to next using the copy
     }
 
     if (block_count != 46)
@@ -31,5 +32,4 @@ int main()
     }
 
     return 0;
-
 }

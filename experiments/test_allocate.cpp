@@ -12,7 +12,7 @@ struct MixedData
 int main()
 {
     
-    initialize_allocator();
+    LockFreeAllocator::initialize_allocator();
     std::cout << "Allocator initialized\n\n";
     
     // Test 1: Single allocation

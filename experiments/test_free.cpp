@@ -4,7 +4,7 @@
 
 int main()
 {
-    initialize_allocator();
+    LockFreeAllocator::initialize_allocator();
     
     std::cout << "\n--- TEST 1: BASIC FREE AND REUSE ---\n";
     void* test_mem = LockFreeAllocator::allocate(64);
