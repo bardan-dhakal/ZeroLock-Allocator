@@ -24,7 +24,7 @@ namespace LockFreeAllocator
                 std::cout << "Free List Head is Null\n";
                 return nullptr;
             }
-
+ 
             new_head = expected_head->next;
 
         } while (!free_list_head.compare_exchange_weak(expected_head, new_head));
@@ -45,13 +45,22 @@ namespace LockFreeAllocator
         if (ptr == nullptr)
         {
             return;
-        }   
-      
-        BlockHeader* free_blk_header = reinterpret_cast<BlockHeader*>(ptr) - 1;
-        free_blk_header->is_free = true;
+        }
 
-        free_blk_header->next = free_list_head;
-        free_list_head = free_blk_header;
+        BlockHeader* free_blk_header = reinterpret_cast<BlockHeader*>(ptr) - 1;
+        BlockHeader* old_head;
+        
+        free_blk_header->is_free = true;
+        
+        do
+        {
+            old_head = free_list_head.load();
+            free_blk_header->next = old_head;
+
+
+        } while(!free_list_head.compare_exchange_weak(old_head, free_blk_header));
+
+
 
         return;
 
